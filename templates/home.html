@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Display Messages -->
+{% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <!-- Small close button -->
+                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+<!-- Container for Layout -->
+<div class="container mt-1">
+    <h3 class="mb-4">Upcoming Programs <i class="fas fa-calendar-alt"></i></h3>
+    <hr>
+
+    <div class="program-list">
+        {% for program in programs %}
+            <h4 class="program d-flex justify-content-between align-items-center">
+                <!-- Display program date, title, and other conditions in a single line -->
+                <div class="program-info d-flex align-items-center">
+                    <!-- Display program date first -->                   
+                   
+                     <!-- Display program registration count with link -->
+                     <a style="font-size: 18px;" href="{% url 'program_detail' program.id %}" class="text-decoration-none">
+                        <p class="text-muted" style="margin: 0; padding: 0; line-height: 1;">
+                            {{ program.program_datetime }}
+                        </p>
+                        {{ program.title }}
+                        ({{ program.registrations_count }} / {{ program.max_received }})
+                        {% if program.registrations_count < program.max_received %}
+                            <sup class="text-danger" style="font-size: small;">Live</sup>
+                        {% else %}
+                            <sup class="text-muted" style="font-size: small;">Closed</sup>
+                        {% endif %}
+                    </a>
+                    
+                 <!-- Check if max_participants has not been filled and show superscript red text -->
+               
+                </div>
+
+               
+
+               
+            </h4>
+        {% endfor %}
+        <hr>
+    </div>
+</div>
+{% endblock %}

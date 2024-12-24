@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Form Section -->
+<div class="container shadow p-3 mb-5 bg-white rounded" style="max-width: 1000px;">
+    <h6 style="text-align: justify;">Registration Form For "{{ program.title }}"</h6>
+
+    <div class="event-details"> 
+        <p><strong>Date & Time:</strong> <span class="event-date">{{ program.date_time }}</span></p>
+        <p style="text-align: justify;">{{ program.description|safe }}</p>
+    </div>
+
+    <!-- Banner (clickable) -->
+    <div class="banner" data-bs-toggle="modal" data-bs-target="#imageModal">
+        <img style="max-height: 400px;" src="{{ program.banner.url }}" alt="Event Banner" class="img-fluid">
+    </div>
+
+    <!-- Modal for Image Popup -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Event Banner</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="{{ program.banner.url }}" alt="Event Banner" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+<br>
+    <form id="registrationForm" action="#" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Your Name <span class="required">*</span></label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="whatsapp" class="form-label">Your WhatsApp Number <span class="required">*</span></label>
+                <input type="text" class="form-control" id="whatsapp" name="whatsapp" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Your Email <span class="required">*</span></label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="institute" class="form-label">Your Institute <span class="required">*</span></label>
+                <input type="text" class="form-control" id="institute" name="institute" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="profession" class="form-label">Current Profession <span class="required">*</span></label>
+                <input type="text" class="form-control" id="profession" name="profession" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="location" class="form-label">Location <span class="required">*</span></label>
+                <input type="text" class="form-control" id="location" name="location" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+    <br>
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'home' %}" type="button" class="btn btn-primary me-2"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Home</a>
+        <button class="btn btn-primary" onclick="copyToClipboard()">Share Link <i class="fa-solid fa-copy"></i></button>
+    </div>
+</div>
+
+<script>
+    function copyToClipboard() {
+        const url = window.location.href; // Get the current page URL
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Link copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy the link: ', err);
+        });
+    }
+</script>
+{% endblock %}
