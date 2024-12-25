@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import ProgramInfo, ParticipansInfo
+from .models import *
 from .forms import ParticipantForm
 
 def home(request):
@@ -36,3 +36,6 @@ def program_detail(request, program_id):
 
     return render(request, 'program_detail.html', {'form': form, 'program': program})
 
+def american_corner_list(request):
+    pages = FacebookPage.objects.all()  # Alphabetic order
+    return render(request, 'american_corner_list.html', {'pages': pages})

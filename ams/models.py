@@ -1,13 +1,19 @@
 from django.db import models
 from datetime import datetime
 import datetime 
+from django.utils.timezone import now
 from ckeditor.fields import RichTextField
+
+
+
+
+
 class ProgramInfo(models.Model):
     title = models.CharField(max_length=200)    
     program_datetime= models.CharField(max_length=30) # End time
     description = RichTextField()
     banner = models.ImageField(upload_to="program_banners/")
-    max_participants = models.PositiveIntegerField()  # Max participants allowed
+    # max_participants = models.PositiveIntegerField()  
     registrations_count = models.PositiveIntegerField(default=0)  # To track the number of registrations
     max_received = models.PositiveIntegerField(default=30)  # Limit for registrations
 
@@ -29,3 +35,23 @@ class ParticipansInfo(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.program.title}"
+
+
+class ExportLog(models.Model):
+    program = models.ForeignKey(ProgramInfo, on_delete=models.CASCADE, related_name="export_logs")
+    export_time = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return f"Export Log for {self.program.title} at {self.export_time.strftime('%Y-%m-%d %H:%M:%S')}"
+    
+
+
+
+
+
+class FacebookPage(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    url = models.URLField(unique=True)
+
+    def __str__(self):
+        return self.name

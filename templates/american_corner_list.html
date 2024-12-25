@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="text-center" style="margin-bottom: 20px;">American Corners</h2>
+    <div class="row">
+        {% for page in pages %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <a style="text-decoration: none; color:blue;" href="{{ page.url }}"target="_blank" class="card-title">{{ forloop.counter }}. {{ page.name }}</a>
+                       
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">No pages found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
