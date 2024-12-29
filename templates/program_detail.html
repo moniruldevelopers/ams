@@ -125,9 +125,18 @@
                 </div>
                 {% endif %}
             </div>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </div>  
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary w-100 mt-3">Submit</button>
     </form>
+    <!-- Buttons Section -->
+    <div class="d-flex justify-content-between mt-3">
+        <!-- Back to Home Button -->
+        <a href="{% url 'home' %}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        
+        <!-- Copy Link Button -->
+        <button type="button" class="btn btn-info" id="copyLinkBtn"><i class="fa-solid fa-copy"></i> Copy Link</button>
+    </div>
 </div>
 
 <!-- Bootstrap Modal for Success -->
@@ -169,6 +178,16 @@
             }
         }, 1000); // Update every second
         {% endif %}
+
+        // Copy Link functionality
+        document.getElementById('copyLinkBtn').addEventListener('click', function () {
+            var currentUrl = window.location.href;
+            navigator.clipboard.writeText(currentUrl).then(function () {
+                alert('Link copied to clipboard!');
+            }).catch(function (err) {
+                console.error('Error copying link: ', err);
+            });
+        });
     });
 </script>
 

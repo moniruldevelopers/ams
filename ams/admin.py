@@ -5,6 +5,9 @@ from django.http import HttpResponse
 import csv
 
 
+from django.template.loader import render_to_string
+
+
 @admin.register(FacebookPage)
 class FacebookPageAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'url')  # Fields to display in the admin list view
@@ -23,6 +26,9 @@ class ParticipantsInfoAdmin(admin.ModelAdmin):
     search_fields = ('name', 'email', 'whatsapp', 'institute')  # Replace with searchable fields in your model
 
 
+
+
+
 @admin.register(ProgramInfo)
 class ProgramInfoAdmin(admin.ModelAdmin):
     list_display = ('title', 'registrations_count', 'max_received')
@@ -33,7 +39,7 @@ class ProgramInfoAdmin(admin.ModelAdmin):
         """Export participants of selected programs."""
         # Handle multiple programs
         if queryset.count() == 1:
-            # Use the program title as the filename for single program
+            # Use the program title as the filename for a single program
             program = queryset.first()
             filename = f"{program.title.replace(' ', '_')}_participants.csv"
         else:
@@ -52,11 +58,13 @@ class ProgramInfoAdmin(admin.ModelAdmin):
         for program in queryset:
             participants = ParticipansInfo.objects.filter(program=program)
             for participant in participants:
+                # Ensure WhatsApp number is treated as text (to preserve leading zeros)
+                whatsapp_number = f"'{str(participant.whatsapp)}"  # Adding a single quote to force Excel to treat it as text
                 writer.writerow([
                     program.title,
                     participant.name,
                     participant.email,
-                    participant.whatsapp,
+                    whatsapp_number,  # Ensure WhatsApp number is handled as a string
                     participant.institute,
                     participant.profession,
                     participant.location
@@ -65,8 +73,6 @@ class ProgramInfoAdmin(admin.ModelAdmin):
         return response
 
     export_program_participants.short_description = "Export Participants for Selected Programs to CSV"
-
-
 
 
 
@@ -100,10 +106,12 @@ class InterestStudentAdmin(admin.ModelAdmin):
         writer = csv.writer(response)
         # Write headers
         writer.writerow(['Name', 'Phone', 'Email', 'Institute Name', 'Class Level'])
-        
+
         # Write data rows
         for student in queryset:
-            writer.writerow([student.name, student.phone, student.email, student.institute_name, student.class_level])
+            # Prefix the phone number with a single quote to ensure it's treated as text in Excel
+            phone_number = f"'{str(student.phone)}"  # Single quote to force text format in Excel
+            writer.writerow([student.name, phone_number, student.email, student.institute_name, student.class_level])
 
         return response
 

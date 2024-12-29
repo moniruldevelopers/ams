@@ -80,6 +80,8 @@ class FacebookPage(models.Model):
         return self.name
 
 
+
+
 class InterestStudent(models.Model):
     CLASS_CHOICES = [
         ('Class 5', 'Class 5'),
@@ -108,3 +110,6 @@ class InterestStudent(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.institute_name}"
+    
+
+
