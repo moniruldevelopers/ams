@@ -78,3 +78,33 @@ class FacebookPage(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class InterestStudent(models.Model):
+    CLASS_CHOICES = [
+        ('Class 5', 'Class 5'),
+        ('Class 6', 'Class 6'),
+        ('Class 7', 'Class 7'),
+        ('Class 8', 'Class 8'),
+        ('Class 9', 'Class 9'),
+        ('Class 10', 'Class 10'),
+        ('Class 11', 'Class 11'),
+        ('Class 12', 'Class 12'),
+        ('University', 'University'),
+    ]
+
+    name = models.CharField(max_length=100)
+    phone = models.CharField(
+        max_length=11,
+        validators=[RegexValidator(
+            regex=r'^01[3-9]\d{8}$',
+            message="Enter a valid Bangladesh phone number (e.g., 01712345678).",
+            code='invalid_phone'
+        )]
+    )
+    email = models.EmailField()
+    institute_name = models.CharField(max_length=100)
+    class_level = models.CharField(max_length=20, choices=CLASS_CHOICES)
+
+    def __str__(self):
+        return f"{self.name} - {self.institute_name}"

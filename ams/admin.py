@@ -66,3 +66,49 @@ class ProgramInfoAdmin(admin.ModelAdmin):
 
     export_program_participants.short_description = "Export Participants for Selected Programs to CSV"
 
+
+
+
+
+
+
+
+
+
+
+
+
+class InterestStudentAdmin(admin.ModelAdmin):
+    # Fields to display in the list view
+    list_display = ('name', 'phone', 'email', 'institute_name', 'class_level')
+
+    # Searchable fields
+    search_fields = ('name', 'email', 'phone', 'institute_name')
+
+    # Filters for class_level field
+    list_filter = ('class_level',)
+
+    # Export functionality (export to CSV)
+    actions = ['export_as_csv']
+
+    def export_as_csv(self, request, queryset):
+        # Create the HttpResponse object with CSV header
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=interest_students.csv'
+
+        # Create a CSV writer object
+        writer = csv.writer(response)
+        # Write headers
+        writer.writerow(['Name', 'Phone', 'Email', 'Institute Name', 'Class Level'])
+        
+        # Write data rows
+        for student in queryset:
+            writer.writerow([student.name, student.phone, student.email, student.institute_name, student.class_level])
+
+        return response
+
+    # Define the export action's label
+    export_as_csv.short_description = "Export Selected Students as CSV"
+
+# Register the model with the admin
+admin.site.register(InterestStudent, InterestStudentAdmin)
