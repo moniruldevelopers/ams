@@ -50,3 +50,6 @@ def program_detail(request, program_id):
 def american_corner_list(request):
     pages = FacebookPage.objects.all()  # Alphabetic order
     return render(request, 'american_corner_list.html', {'pages': pages})
+
+def handler404(request, exception):
+    return render(request, '404.html', status=404)

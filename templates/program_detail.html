@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}
+   Registration for {{ program.title }}
+{% endblock title %}
+    
 {% block content %}
 <div class="container shadow p-3 mb-5 bg-white rounded" style="max-width: 1000px;">
     <h6>Registration Form For "{{ program.title }}"</h6>

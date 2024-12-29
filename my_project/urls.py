@@ -4,6 +4,13 @@ from django.views.static import serve
 
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls import handler404
+
+
+
+from ams.views import handler404 as custom_handler404
+handler404 = custom_handler404
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('ams.urls')),  
