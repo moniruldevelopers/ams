@@ -4,8 +4,25 @@ import datetime
 from django.utils.timezone import now
 from ckeditor.fields import RichTextField
 from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
+class SiteInfo(models.Model):
+    site_name = models.CharField(max_length=50)
+    site_logo = models.ImageField(upload_to='logo/', null=True, blank=True)   
+    phone = models.CharField(max_length=14, null=True, blank=True)
+    address = models.CharField(max_length=100, null=True, blank=True)
+    site_facebook = models.URLField(max_length=100, null=True, blank=True)
+   
 
+    def __str__(self):
+        return self.site_name
 
+    def clean(self):
+        if SiteInfo.objects.exists() and not self.pk:
+            raise ValidationError("Only one SiteInfo instance is allowed.")
+
+    def save(self, *args, **kwargs):
+        self.clean()  # Call clean method before saving
+        super().save(*args, **kwargs)
 
 class ProgramInfo(models.Model):
     title = models.CharField(max_length=200)    

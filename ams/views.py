@@ -5,9 +5,10 @@ from .forms import ParticipantForm
 from django.http import JsonResponse
 
 def home(request):
+    site_info = SiteInfo.objects.first()  # Get the first (and only) instance
     # Retrieve programs and sort them in descending order by ID, limit to 12
     programs = ProgramInfo.objects.all().order_by('-id')[:12]  # Limit to 12 programs
-    return render(request, 'home.html', {'programs': programs})
+    return render(request, 'home.html', {'programs': programs,'site_info': site_info,})
 
 # Program detail view to show the form
 def program_detail(request, program_id):

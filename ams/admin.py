@@ -3,8 +3,8 @@ from django.contrib import admin
 from .models import *
 from django.http import HttpResponse
 import csv
-
-
+from django.forms import ModelForm
+from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 
 
@@ -19,6 +19,22 @@ admin.site.site_header = "American Corner Barishal"
 admin.site.site_title = "American Corner Barishal"
 admin.site.index_title = "Welcome to American Corner Barishal"
 # Register your models here.
+
+class SiteInfoAdminForm(ModelForm):
+    class Meta:
+        model = SiteInfo
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if SiteInfo.objects.exists() and not self.instance.pk:
+            raise ValidationError("Only one SiteInfo instance is allowed.")
+        return cleaned_data
+
+class SiteInfoAdmin(admin.ModelAdmin):
+    form = SiteInfoAdminForm
+
+admin.site.register(SiteInfo, SiteInfoAdmin)
 
 @admin.register(ParticipansInfo)
 class ParticipantsInfoAdmin(admin.ModelAdmin):
