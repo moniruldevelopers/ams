@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Form Section -->
 <div class="container shadow p-3 mb-5 bg-white rounded" style="max-width: 1000px;">
-    <h6 style="text-align: justify;">Registration Form For "{{ program.title }}"</h6>
+    <h6>Registration Form For "{{ program.title }}"</h6>
 
-    <div class="event-details"> 
-        <p><strong>Date & Time:</strong> <span class="event-date">{{ program.date_time }}</span></p>
-        <p style="text-align: justify;">{{ program.description|safe }}</p>
+    <div class="event-details">
+        <p>{{ program.description|safe }}</p>
     </div>
 
     <!-- Banner (clickable) -->
@@ -29,52 +27,145 @@
             </div>
         </div>
     </div>
-<br>
-    <form id="registrationForm" action="#" method="post">
+
+    <form id="registrationForm" action="#" method="post" novalidate>
         {% csrf_token %}
         <div class="row">
+            <!-- Name Field -->
             <div class="col-md-6 mb-3">
                 <label for="name" class="form-label">Your Name <span class="required">*</span></label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.name.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
+
+            <!-- WhatsApp Number Field -->
             <div class="col-md-6 mb-3">
                 <label for="whatsapp" class="form-label">Your WhatsApp Number <span class="required">*</span></label>
-                <input type="text" class="form-control" id="whatsapp" name="whatsapp" required>
+                {{ form.whatsapp }}
+                {% if form.whatsapp.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.whatsapp.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
+
+            <!-- Email Field -->
             <div class="col-md-6 mb-3">
                 <label for="email" class="form-label">Your Email <span class="required">*</span></label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.email.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
+
+            <!-- Institute Field -->
             <div class="col-md-6 mb-3">
                 <label for="institute" class="form-label">Your Institute <span class="required">*</span></label>
-                <input type="text" class="form-control" id="institute" name="institute" required>
+                {{ form.institute }}
+                {% if form.institute.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.institute.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
+
+            <!-- Profession Field -->
             <div class="col-md-6 mb-3">
                 <label for="profession" class="form-label">Current Profession <span class="required">*</span></label>
-                <input type="text" class="form-control" id="profession" name="profession" required>
+                {{ form.profession }}
+                {% if form.profession.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.profession.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
+
+            <!-- Location Field -->
             <div class="col-md-6 mb-3">
                 <label for="location" class="form-label">Location <span class="required">*</span></label>
-                <input type="text" class="form-control" id="location" name="location" required>
+                {{ form.location }}
+                {% if form.location.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.location.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Class Level Field -->
+            <div class="col-md-6 mb-3">
+                <label for="class_level" class="form-label">Class/Level <span class="required">*</span></label>
+                {{ form.class_level }}
+                {% if form.class_level.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.class_level.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </div>
         <button type="submit" class="btn btn-primary w-100">Submit</button>
     </form>
-    <br>
-    <div class="d-flex justify-content-between">
-        <a href="{% url 'home' %}" type="button" class="btn btn-primary me-2"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Home</a>
-        <button class="btn btn-primary" onclick="copyToClipboard()">Share Link <i class="fa-solid fa-copy"></i></button>
+</div>
+
+<!-- Bootstrap Modal for Success -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Thank You</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span style="color:green">Registration successfully done. We will confirm you by phone call or WhatsApp message.</span>
+                <br><br>
+                <small>You are redirecting to the home page after <span id="countdown">10</span> seconds...</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    function copyToClipboard() {
-        const url = window.location.href; // Get the current page URL
-        navigator.clipboard.writeText(url).then(() => {
-            alert('Link copied to clipboard!');
-        }).catch(err => {
-            console.error('Failed to copy the link: ', err);
-        });
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+        {% if success %}
+        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+
+        var countdownElement = document.getElementById('countdown');
+        var countdown = 10;
+
+        var countdownInterval = setInterval(function () {
+            countdownElement.textContent = countdown;
+            countdown--;
+
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                window.location.href = "{% url 'home' %}";
+            }
+        }, 1000); // Update every second
+        {% endif %}
+    });
 </script>
+
 {% endblock %}

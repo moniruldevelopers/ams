@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import *
 from .forms import ParticipantForm
+from django.http import JsonResponse
 
 def home(request):
     # Retrieve programs and sort them in descending order by ID, limit to 12
@@ -16,7 +17,9 @@ def program_detail(request, program_id):
 
     if registrations_count >= max_received:
         messages.warning(request, f"Registration limit reached for {program.title}.")
-        return redirect('home')  # Redirect to home if the limit is reached
+        return redirect('home')
+
+    success = False  # Initialize success variable to False
 
     if request.method == 'POST':
         form = ParticipantForm(request.POST)
@@ -30,11 +33,19 @@ def program_detail(request, program_id):
             program.save()
 
             messages.success(request, 'Registration successful!')
-            return redirect('home')
+            success = True  # Set success to True after successful form submission
+
+            # Redirect to home after success (will automatically show the modal)
+            return render(request, 'program_detail.html', {'form': form, 'program': program, 'success': success})
+
     else:
         form = ParticipantForm()
 
-    return render(request, 'program_detail.html', {'form': form, 'program': program})
+    return render(request, 'program_detail.html', {'form': form, 'program': program, 'success': success})
+
+
+
+
 
 def american_corner_list(request):
     pages = FacebookPage.objects.all()  # Alphabetic order
